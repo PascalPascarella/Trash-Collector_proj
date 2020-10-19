@@ -1,1 +1,3 @@
-# Trash-Collector_proj
+# Dētrītus
+----------
+A garbage collection application by Pascal Pascarella
