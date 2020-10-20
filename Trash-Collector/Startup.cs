@@ -12,6 +12,10 @@ using Trash_Collector.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Trash_Collector.ActionFilters;
+using System.ComponentModel;
 
 namespace Trash_Collector
 {
@@ -34,6 +38,8 @@ namespace Trash_Collector
 					.AddEntityFrameworkStores<ApplicationDbContext>()
 					.AddDefaultUI()
 					.AddDefaultTokenProviders();
+			services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);		// Adding ClaimsPrincipal to service in order to inject into GlobalRouting action filter
+			services.AddControllers(config => { config.Filters.Add(typeof(GlobalRouting)); });		// Adds action filter to every controller via services.AddControllers()
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 		}
