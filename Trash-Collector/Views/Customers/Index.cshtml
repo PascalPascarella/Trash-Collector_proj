@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Trash_Collector.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentityUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickupDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraPickUpDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SuspendServiceStartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SuspendServiceEndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceDue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.trashPickupStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdentityUser.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PickupDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraPickUpDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SuspendServiceStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SuspendServiceEndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BalanceDue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.trashPickupStatus)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
