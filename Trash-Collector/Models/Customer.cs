@@ -18,6 +18,10 @@ namespace Trash_Collector.Models
 		public string IdentityUserId { get; set; }
 		public IdentityUser IdentityUser { get; set; }
 
+		[ForeignKey("Address")]
+		public string AddressId { get; set; }
+		public Address Address { get; set; }
+
 		[Display(Name = "First Name")]
 		public string FirstName { get; set; }
 
