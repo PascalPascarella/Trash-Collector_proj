@@ -30,8 +30,10 @@ namespace Trash_Collector
 			services.AddDbContext<ApplicationDbContext>(options =>
 					options.UseSqlServer(
 							Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-					.AddEntityFrameworkStores<ApplicationDbContext>();
+			services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)		// Create unique user bound with role, do not require email verification
+					.AddEntityFrameworkStores<ApplicationDbContext>()
+					.AddDefaultUI()
+					.AddDefaultTokenProviders();
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 		}
