@@ -11,7 +11,7 @@ namespace Trash_Collector.Models
 	public class Employee
 	{
 		[Key]
-		public int EmployeeId { get; set; }
+		public int Id { get; set; }
 
 		[ForeignKey("IdentityUser")]
 		public int IdentityUserId { get; set; }
