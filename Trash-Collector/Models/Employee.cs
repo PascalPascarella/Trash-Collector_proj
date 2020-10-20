@@ -18,7 +18,7 @@ namespace Trash_Collector.Models
 		public IdentityUser	IdentityUser { get; set; }
 
 		[ForeignKey("Address")]
-		public string AddressId { get; set; }
+		public int AddressId { get; set; }
 		public Address Address { get; set; }
 
 		[Display(Name = "First Name")]
