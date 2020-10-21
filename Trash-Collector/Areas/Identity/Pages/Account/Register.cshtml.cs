@@ -96,11 +96,11 @@ namespace Trash_Collector.Areas.Identity.Pages.Account
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     if (Input.Role == "Customer")
                      {
-                        return RedirectToAction("Create", "Customer", null);
+                        return RedirectToAction("Create", "Customers", null);
 					          }
                     else if (Input.Role == "Employee")
 					          {
-                        return RedirectToAction("Create", "Employee", null);
+                        return RedirectToAction("Create", "Employees", null);
 					          }
                 }
                 foreach (var error in result.Errors)

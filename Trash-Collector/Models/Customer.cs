@@ -29,7 +29,7 @@ namespace Trash_Collector.Models
 		public string LastName { get; set; }
 
 		[Display(Name = "Desired Pickup Date")]
-		public DayOfWeek PickupDay { get; set; }
+		public string PickupDay { get; set; }
 
 		[Display(Name = "Optional One-Time Pickup Date")]
 		public DateTime ExtraPickUpDay { get; set; }
