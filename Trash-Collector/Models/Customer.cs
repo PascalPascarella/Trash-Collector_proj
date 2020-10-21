@@ -45,6 +45,10 @@ namespace Trash_Collector.Models
 
 		[Display(Name = "Confirm Pickup")]
 		public TrashPickupStatus trashPickupStatus { get; set; }
+		[NotMapped]
+		public double Lat { get; set; }
+		[NotMapped]
+		public double Long { get; set; }
 
 		// Constructor
 		public Customer()		// Customers start with no balance due and trash pending pickup
@@ -52,6 +56,8 @@ namespace Trash_Collector.Models
 			BalanceDue = 0;
 			trashPickupStatus = TrashPickupStatus.Unsettled;
 		}
+
+
 
 		// Member Constants
 		public enum TrashPickupStatus

@@ -24,14 +24,14 @@ namespace Trash_Collector.Controllers
         public async Task<IActionResult> Index()
         {
            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-           var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).Single();
+           var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).SingleOrDefault();
            if (CurrentEmployee == null)
            {
              return RedirectToAction("Create");
            }
            string today = DateTime.Today.DayOfWeek.ToString();
-           var applicationDbContext = await _context.Customer.Where(
-             (c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.PickupDay == today)).ToListAsync();
+           var applicationDbContext = await _context.Customer.Where
+             ((c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.PickupDay == today)).ToListAsync();
            return View(applicationDbContext);
 
         }

@@ -85,8 +85,16 @@ namespace Trash_Collector.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    if (Input.Role == "Customer")
+                    {
+                      return RedirectToAction("Details", "Customers", null);
+                    }
+                    else if (Input.Role == "Employee")
+                    {
+                      return RedirectToAction("Index", "Employees", null);
+                    }
 
-                }
+        }
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
