@@ -30,7 +30,11 @@ namespace Trash_Collector.Controllers
              return RedirectToAction("Create");
            }
            string today = DateTime.Today.DayOfWeek.ToString();
-           var applicationDbContext = await _context.Customer.Where((c => c.Zipcode == CurrentEmployee.Zipcode && c.PickupDay == today)).ToListAsync();
+           var applicationDbContext = await _context.Customer.Where(
+             (c => 
+             //c.P == CurrentEmployee.Zipcode && 
+             c.PickupDay == today)
+             ).ToListAsync();
            return View(applicationDbContext);
 
         }
