@@ -31,10 +31,7 @@ namespace Trash_Collector.Controllers
            }
            string today = DateTime.Today.DayOfWeek.ToString();
            var applicationDbContext = await _context.Customer.Where(
-             (c => 
-             //c.P == CurrentEmployee.Zipcode && 
-             c.PickupDay == today)
-             ).ToListAsync();
+             (c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.PickupDay == today)).ToListAsync();
            return View(applicationDbContext);
 
         }
