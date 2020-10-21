@@ -67,7 +67,7 @@ namespace Trash_Collector.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            public string Role { get; set; }    // Allows us to view and edit a user's Role
+            public string Role { get; set;  }   // Allows us to view and edit a user's Role
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -96,11 +96,11 @@ namespace Trash_Collector.Areas.Identity.Pages.Account
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     if (Input.Role == "Customer")
                      {
-                        RedirectToAction("Create", "Customer");
+                        return RedirectToAction("Create", "Customer", null);
 					          }
                     else if (Input.Role == "Employee")
 					          {
-                        RedirectToAction("Create", "Employee");
+                        return RedirectToAction("Create", "Employee", null);
 					          }
                 }
                 foreach (var error in result.Errors)
