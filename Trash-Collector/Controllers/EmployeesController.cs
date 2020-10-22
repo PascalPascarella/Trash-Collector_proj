@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,17 +22,7 @@ namespace Trash_Collector.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-           var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-           var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).SingleOrDefault();
-           if (CurrentEmployee == null)
-           {
-             return RedirectToAction("Create");
-           }
-           string today = DateTime.Today.DayOfWeek.ToString();
-           var applicationDbContext = await _context.Customer.Where
-             ((c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.PickupDay == today)).ToListAsync();
-           return View(applicationDbContext);
-
+            return View();
         }
 
         // GET: Employees/Details/5
@@ -45,7 +34,6 @@ namespace Trash_Collector.Controllers
             }
 
             var employee = await _context.Employee
-                .Include(e => e.Address)
                 .Include(e => e.IdentityUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
@@ -59,7 +47,6 @@ namespace Trash_Collector.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -69,7 +56,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,AddressId,FirstName,LastName")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +64,6 @@ namespace Trash_Collector.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", employee.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
             return View(employee);
         }
@@ -95,7 +81,6 @@ namespace Trash_Collector.Controllers
             {
                 return NotFound();
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", employee.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
             return View(employee);
         }
@@ -105,7 +90,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,AddressId,FirstName,LastName")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
         {
             if (id != employee.Id)
             {
@@ -132,7 +117,6 @@ namespace Trash_Collector.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", employee.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
             return View(employee);
         }
@@ -146,7 +130,6 @@ namespace Trash_Collector.Controllers
             }
 
             var employee = await _context.Employee
-                .Include(e => e.Address)
                 .Include(e => e.IdentityUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,14 +22,7 @@ namespace Trash_Collector.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-           var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-           var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).SingleOrDefault();
-           if (CurrentEmployee == null)
-           {
-             return RedirectToAction("Create");
-           }
-            var applicationDbContext = _context.Customer.Include(c => c.Address).Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+          return View();
         }
 
         // GET: Customers/Details/5
@@ -42,7 +34,6 @@ namespace Trash_Collector.Controllers
             }
 
             var customer = await _context.Customer
-                .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
@@ -56,7 +47,6 @@ namespace Trash_Collector.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -66,7 +56,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,AddressId,FirstName,LastName,PickupDay,ExtraPickUpDay,SuspendServiceStartDate,SuspendServiceEndDate,BalanceDue,trashPickupStatus")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -74,7 +64,6 @@ namespace Trash_Collector.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
             return View(customer);
         }
@@ -92,7 +81,6 @@ namespace Trash_Collector.Controllers
             {
                 return NotFound();
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
             return View(customer);
         }
@@ -102,7 +90,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,AddressId,FirstName,LastName,PickupDay,ExtraPickUpDay,SuspendServiceStartDate,SuspendServiceEndDate,BalanceDue,trashPickupStatus")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,FirstName,ZipCode")] Customer customer)
         {
             if (id != customer.Id)
             {
@@ -129,7 +117,6 @@ namespace Trash_Collector.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
             return View(customer);
         }
@@ -143,7 +130,6 @@ namespace Trash_Collector.Controllers
             }
 
             var customer = await _context.Customer
-                .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)

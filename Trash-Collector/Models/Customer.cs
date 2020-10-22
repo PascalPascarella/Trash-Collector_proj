@@ -10,7 +10,6 @@ namespace Trash_Collector.Models
 {
 	public class Customer
 	{
-		// Member Variables
 		[Key]
 		public int Id { get; set; }
 
@@ -18,52 +17,10 @@ namespace Trash_Collector.Models
 		public string IdentityUserId { get; set; }
 		public IdentityUser IdentityUser { get; set; }
 
-		[ForeignKey("Address")]
-		public int AddressId { get; set; }
-		public Address Address { get; set; }
-
 		[Display(Name = "First Name")]
 		public string FirstName { get; set; }
 
-		[Display(Name = "Last Name")]
-		public string LastName { get; set; }
-
-		[Display(Name = "Desired Pickup Date")]
-		public string PickupDay { get; set; }
-
-		[Display(Name = "Optional One-Time Pickup Date")]
-		public DateTime ExtraPickUpDay { get; set; }
-
-		[Display(Name = "Optional Pickup Suspension Start Date")]
-		public DateTime SuspendServiceStartDate { get; set; }
-
-		[Display(Name = "Optional Pickup Suspension End Date")]
-		public DateTime SuspendServiceEndDate { get; set; }
-
-		[Display(Name = "Balance Due On Account")]
-		public int BalanceDue { get; set; }
-
-		[Display(Name = "Confirm Pickup")]
-		public TrashPickupStatus trashPickupStatus { get; set; }
-		[NotMapped]
-		public double Lat { get; set; }
-		[NotMapped]
-		public double Long { get; set; }
-
-		// Constructor
-		public Customer()		// Customers start with no balance due and trash pending pickup
-		{
-			BalanceDue = 0;
-			trashPickupStatus = TrashPickupStatus.Unsettled;
-		}
-
-
-
-		// Member Constants
-		public enum TrashPickupStatus
-		{
-			Unsettled,
-			Settled
-		}
+		[Display(Name = "Zip")]
+		public int ZipCode { get; set; }
 	}
 }
