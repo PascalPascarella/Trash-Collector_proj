@@ -25,6 +25,6 @@ namespace Trash_Collector.Data
 		}
 		public DbSet<Trash_Collector.Models.Customer> Customer { get; set; }
 		public DbSet<Trash_Collector.Models.Employee> Employee { get; set; }
-		//public DbSet<Trash_Collector.Models.Address> Address { get; set; }
+		public DbSet<Trash_Collector.Models.Address> Address { get; set; }
 	}
 }
