@@ -22,11 +22,11 @@ namespace Trash_Collector.ActionFilters
 			{
 				if (_claimsPrincipal.IsInRole("Customer"))		// If user role is customer, redirect to home/index belonging to customer view
 				{
-					context.Result = new RedirectToActionResult("Index", "Customers", null);
+					context.Result = new RedirectToActionResult("Create", "Customers", null);
 				}
 				else if (_claimsPrincipal.IsInRole("Employee"))   // If user role is employee, redirect to home/index belonging to employee view
 				{
-					context.Result = new RedirectToActionResult("Index", "Employees", null);
+					context.Result = new RedirectToActionResult("Create", "Employees", null);
 				}
 			}
 		}

@@ -44,7 +44,7 @@
 //            }
 
 //            var customer = await _context.Customer
-//                //.Include(c => c.Address)
+//                .Include(c => c.Address)
 //                .Include(c => c.IdentityUser)
 //                .FirstOrDefaultAsync(m => m.Id == id);
 //            if (customer == null)

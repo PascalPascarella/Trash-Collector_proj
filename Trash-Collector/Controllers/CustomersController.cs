@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,150 +11,111 @@ using Trash_Collector.Models;
 
 namespace Trash_Collector.Controllers
 {
-    public class CustomersController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	public class CustomersController : Controller
+	{
+		private ApplicationDbContext _db;   // Represents DB anywhere inside of class
 
-        public CustomersController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		// Constructor
+		public CustomersController(ApplicationDbContext db)   // Passes the project's INSTANCE into the controller
+		{
+			_db = db;   // Assigns input to _db member variable on line 14
+		}
+		// GET: CustomersTest
+		public ActionResult Index()
+		{
+			var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+				var CurrentCustomer = _db.Customer.Where(e => e.IdentityUserId == userId).SingleOrDefault();
+				if (CurrentCustomer == null)
+				{
+				  return RedirectToAction("Details");
+				}
+			var applicationDbContext = _db.Customer.Include(c => c.IdentityUser);
+			return View(applicationDbContext.ToListAsync());
+			}
 
-        // GET: Customers
-        public async Task<IActionResult> Index()
-        {
-          return View();
-        }
+		// GET: CustomersTest/Details/5
+		public ActionResult Details(int id)
+		{
+			var customerDetails = _db.Customer.Find(id);
+			return View(customerDetails);
+		}
 
-        // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: CustomersTest/Create
+		public ActionResult Create()
+		{
+			Customer customer = new Customer();
+			return View(customer);
+		}
 
-            var customer = await _context.Customer
-                .Include(c => c.IdentityUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
+		// POST: CustomersTest/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Create(Customer customer)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					_db.Add(customer);
+					_db.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+				_db.Customer.Add(customer);
+				_db.SaveChanges();
+				return RedirectToAction(nameof(Details));
+			}
+			catch
+			{
+				return View();
+			}
+		}
 
-            return View(customer);
-        }
+		// GET: CustomersTest/Edit/5
+		public ActionResult Edit(int id)
+		{
+			var customerEdit = _db.Customer.Find(id);
+			return View();
+		}
 
-        // GET: Customers/Create
-        public IActionResult Create()
-        {
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
-        }
+		// POST: CustomersTest/Edit/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Edit(int id, Customer customer)
+		{
+			try
+			{
+				_db.Customer.Update(customer);
+				_db.SaveChanges();
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Customer customer)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
-            return View(customer);
-        }
+		// GET: CustomersTest/Delete/5
+		public ActionResult Delete(int id)
+		{
+			var customerDelete = _db.Customer.Find(id);
+			return View();
+		}
 
-        // GET: Customers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customer.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
-            return View(customer);
-        }
-
-        // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,FirstName,ZipCode")] Customer customer)
-        {
-            if (id != customer.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
-            return View(customer);
-        }
-
-        // GET: Customers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customer
-                .Include(c => c.IdentityUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var customer = await _context.Customer.FindAsync(id);
-            _context.Customer.Remove(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customer.Any(e => e.Id == id);
-        }
-    }
+		// POST: CustomersTest/Delete/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Delete(int id, Customer customer)
+		{
+			try
+			{
+				_db.Customer.Remove(customer);
+				_db.SaveChanges();
+				return RedirectToAction("Index", "Home", null);
+			}
+			catch
+			{
+				return View();
+			}
+		}
+	}
 }
