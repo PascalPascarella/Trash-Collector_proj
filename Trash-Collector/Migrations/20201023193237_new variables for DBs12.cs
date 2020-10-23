@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Trash_Collector.Migrations
 {
-    public partial class newvariablesforDBs : Migration
+    public partial class newvariablesforDBs12 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace Trash_Collector.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Address12 = table.Column<string>(nullable: true),
+                    Address1 = table.Column<string>(nullable: true),
                     Address2 = table.Column<string>(nullable: true),
                     CityState = table.Column<string>(nullable: true),
                     PostalCode = table.Column<int>(nullable: false)
@@ -235,12 +235,12 @@ namespace Trash_Collector.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "fb2fc689-ef6d-44e0-8f86-f6242ad1aa5b", "d95c428a-2359-4a8f-b310-a8047b8b60bb", "Customer", "CUSTOMER" });
+                values: new object[] { "5a101f30-d6d4-40ba-b48f-0941a764e0e4", "d87fbe69-5c2b-404e-8d00-538752456d32", "Customer", "CUSTOMER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "e7b8589f-c54c-4be7-bf40-8b70dde2f1d4", "592ca6d6-9559-417e-a635-507b94f64d4d", "Employee", "EMPLOYEE" });
+                values: new object[] { "5271f7f3-8595-4cd5-bb91-91c356b5b98b", "2e92ba95-3b4f-40c6-acda-95e6de943407", "Employee", "EMPLOYEE" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

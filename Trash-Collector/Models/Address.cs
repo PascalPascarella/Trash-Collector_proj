@@ -12,7 +12,7 @@ namespace Trash_Collector.Models
 		public int Id { get; set; }
 
 		[Display(Name = "Address Line 1")]
-		public string Address12 { get; set; }
+		public string Address1 { get; set; }
 
 		[Display(Name = "Address Line 2")]
 		public string Address2 { get; set; }

@@ -55,7 +55,7 @@ namespace Trash_Collector.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-                  return View();
+            return View();
         }
 
         // POST: Customers/Create
@@ -63,7 +63,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Customer customer)
+        public async Task<IActionResult> Create(Customer customer)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             customer.IdentityUserId = userId;

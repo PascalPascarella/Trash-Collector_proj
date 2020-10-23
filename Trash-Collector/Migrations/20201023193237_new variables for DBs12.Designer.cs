@@ -10,8 +10,8 @@ using Trash_Collector.Data;
 namespace Trash_Collector.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201023182110_new variables for DBs")]
-    partial class newvariablesforDBs
+    [Migration("20201023193237_new variables for DBs12")]
+    partial class newvariablesforDBs12
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace Trash_Collector.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fb2fc689-ef6d-44e0-8f86-f6242ad1aa5b",
-                            ConcurrencyStamp = "d95c428a-2359-4a8f-b310-a8047b8b60bb",
+                            Id = "5a101f30-d6d4-40ba-b48f-0941a764e0e4",
+                            ConcurrencyStamp = "d87fbe69-5c2b-404e-8d00-538752456d32",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "e7b8589f-c54c-4be7-bf40-8b70dde2f1d4",
-                            ConcurrencyStamp = "592ca6d6-9559-417e-a635-507b94f64d4d",
+                            Id = "5271f7f3-8595-4cd5-bb91-91c356b5b98b",
+                            ConcurrencyStamp = "2e92ba95-3b4f-40c6-acda-95e6de943407",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -240,7 +240,7 @@ namespace Trash_Collector.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address12")
+                    b.Property<string>("Address1")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Address2")

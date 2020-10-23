@@ -55,7 +55,6 @@ namespace Trash_Collector.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -64,7 +63,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,AddressId,FirstName,LastNameZipTemporary")] Employee employee)
         {
             if (ModelState.IsValid)
             {

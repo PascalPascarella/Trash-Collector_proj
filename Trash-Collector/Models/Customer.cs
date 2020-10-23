@@ -14,7 +14,7 @@ namespace Trash_Collector.Models
 		[Key]
 		public int Id { get; set; }
 
-		//[ForeignKey("IdentityUser")]
+		[ForeignKey("IdentityUser")]
 		public string IdentityUserId { get; set; }
 		public IdentityUser IdentityUser { get; set; }
 
@@ -32,7 +32,7 @@ namespace Trash_Collector.Models
 		public string LastName { get; set; }
 
 		[Display(Name = "Desired Pickup Date")]
-		public Day PickupDay { get; set; }
+		public DayOfWeek PickupDay { get; set; }
 
 		[Display(Name = "Optional One-Time Pickup Date")]
 		public DateTime ExtraPickUpDay { get; set; }
@@ -54,16 +54,11 @@ namespace Trash_Collector.Models
 		public double Long { get; set; }
 
 		// Constructor
-		public Customer()    // Customers start with no balance due and trash pending pickup
-		{
-			BalanceDue = 0;
-			trashPickupStatus = TrashPickupStatus.Unsettled;
-		}
-
-		public enum Day
-		{
-			Monay, Tueday, Weday, Thuday, Fiday, Saday, Suday
-		}
+		//public Customer()    // Customers start with no balance due and trash pending pickup
+		//{
+		//	BalanceDue = 0;
+		//	trashPickupStatus = TrashPickupStatus.Unsettled;
+		//}
 
 		// Member Constants
 		public enum TrashPickupStatus
