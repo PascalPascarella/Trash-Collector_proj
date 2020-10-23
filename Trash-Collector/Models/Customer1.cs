@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Trash_Collector.Models
 {
-	public class Customer
+	public class Customer1
 	{
 		// Member Variables
 		[Key]
@@ -18,9 +18,9 @@ namespace Trash_Collector.Models
 		public string IdentityUserId { get; set; }
 		public IdentityUser IdentityUser { get; set; }
 
-		[ForeignKey("Address")]
-		public int AddressId { get; set; }
-		public Address Address { get; set; }
+		//[ForeignKey("Address")]
+		//public int AddressId { get; set; }
+		//public Address Address { get; set; }
 
 		[Display(Name = "Zipcode")]
 		public int ZipTemporary { get; set; }

@@ -15,12 +15,19 @@ namespace Trash_Collector.Models
 
 		[ForeignKey("IdentityUser")]
 		public string IdentityUserId { get; set; }
-		public IdentityUser IdentityUser { get; set; }
+		public IdentityUser	IdentityUser { get; set; }
+
+		[ForeignKey("Address")]
+		public int AddressId { get; set; }
+		public Address Address { get; set; }
+
+		[Display(Name = "Zipcode")]
+		public int ZipTemporary { get; set; }
 
 		[Display(Name = "First Name")]
 		public string FirstName { get; set; }
 
-		[Display(Name = "Zip")]
-		public int ZipCode { get; set; }
+		[Display(Name = "Last Name")]
+		public string LastName { get; set; }
 	}
 }
