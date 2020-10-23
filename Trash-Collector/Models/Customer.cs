@@ -54,7 +54,7 @@ namespace Trash_Collector.Models
 		public double Long { get; set; }
 
 		// Constructor
-		public Customer1()    // Customers start with no balance due and trash pending pickup
+		public Customer()    // Customers start with no balance due and trash pending pickup
 		{
 			BalanceDue = 0;
 			trashPickupStatus = TrashPickupStatus.Unsettled;
