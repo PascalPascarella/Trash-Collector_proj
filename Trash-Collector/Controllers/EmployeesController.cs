@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,98 +11,159 @@ using Trash_Collector.Models;
 
 namespace Trash_Collector.Controllers
 {
-	public class EmployeesController : Controller
-	{
-		private ApplicationDbContext _db;   // Represents DB anywhere inside of class
+    public class EmployeesController : Controller
+    {
+        private readonly ApplicationDbContext _context;
 
-		// Constructor
-		public EmployeesController(ApplicationDbContext db)   // Passes the project's INSTANCE into the controller
-		{
-			_db = db;   // Assigns input to _db member variable on line 14
-		}
-		// GET: EmployeesTest
-		public ActionResult Index()
-		{
-			return View();
-		}
+        public EmployeesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-		// GET: EmployeesTest/Details/5
-		public ActionResult Details(int id)
-		{
-			var employeesDetails = _db.Employee.Find(id);
-			return View(employeesDetails);
-		}
+        // GET: Employees
+        public async Task<IActionResult> Index()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentEmployee = _context.Employee.Where(c => c.IdentityUserId == userId).FirstOrDefault();
+            if (CurrentEmployee == null)
+            {
+                return RedirectToAction("Create");
+            }
+            var applicationDbContext = _context.Employee.Include(c => c.IdentityUser);
+            return View(await applicationDbContext.ToListAsync());
+    }
 
-		// GET: EmployeesTest/Create
-		public ActionResult Create()
-		{
+        // GET: Employees/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			return View();
-		}
+            var employee = await _context.Employee
+                .Include(e => e.IdentityUser)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
 
-		// POST: EmployeesTest/Create
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Create(Employee employee)
-		{
-			try
-			{
-				_db.Employee.Add(employee);   // Takes captured employee data and sends to DB
-				_db.SaveChanges();
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
+            return View(employee);
+        }
 
-		// GET: EmployeesTest/Edit/5
-		public ActionResult Edit(int id)
-		{
-			var employeeEdit = _db.Employee.Find(id);
-			return View(employeeEdit);
-		}
+        // GET: Employees/Create
+        public IActionResult Create()
+        {
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
+            return View();
+        }
 
-		// POST: EmployeesTest/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, Employee employee)
-		{
-			try
-			{
-				_db.Employee.Update(employee);
-				_db.SaveChanges();
-				return RedirectToAction(nameof(Details));
-			}
-			catch
-			{
-				return View();
-			}
-		}
+        // POST: Employees/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                employee.IdentityUserId = userId;
+                _context.Add(employee);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
 
-		// GET: EmployeesTest/Delete/5
-		public ActionResult Delete(int id)
-		{
-			var employeeDelete = _db.Employee.Find(id);
-			return View(employeeDelete);
-		}
+            return View(employee);
+        }
 
-		// POST: EmployeesTest/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, Employee employee)
-		{
-			try
-			{
-				_db.Employee.Remove(employee);
-				_db.SaveChanges();
-				return RedirectToAction("Index", "Home", null);
-			}
-			catch
-			{
-				return View();
-			}
-		}
-	}
+        // GET: Employees/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employee.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
+            return View(employee);
+        }
+
+        // POST: Employees/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
+        {
+            if (id != employee.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(employee);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(employee.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
+            return View(employee);
+        }
+
+        // GET: Employees/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employee
+                .Include(e => e.IdentityUser)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return View(employee);
+        }
+
+        // POST: Employees/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var employee = await _context.Employee.FindAsync(id);
+            _context.Employee.Remove(employee);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool EmployeeExists(int id)
+        {
+            return _context.Employee.Any(e => e.Id == id);
+        }
+    }
 }
