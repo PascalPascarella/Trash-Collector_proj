@@ -61,8 +61,22 @@ namespace Trash_Collector.Controllers
             {
                 return RedirectToAction("Create");
             }
-            var applicationDbContext = _context.Customer.Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+
+// Need to make dropdown to select day of week for Employee then capture as a returned view
+
+            DayOfWeek today = DateTime.Today.DayOfWeek;
+			      var applicationDbContext = await _context.Customer.Where
+			      		 (c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.PickupDay == today).ToListAsync();
+            if(applicationDbContext == null)
+			      {
+              var applicationDbContextNoDaySelected = _context.Customer.Include(c => c.IdentityUser);
+			      	return View(await applicationDbContextNoDaySelected.ToListAsync());
+			      }
+             return View(applicationDbContext);
+
+
+			      //var applicationDbContext = _context.Customer.Include(c => c.IdentityUser);
+         //   return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Employees/Create
