@@ -22,9 +22,6 @@ namespace Trash_Collector.Models
 		public int AddressId { get; set; }
 		public Address Address { get; set; }
 
-		[Display(Name = "Zipcode")]
-		public int ZipTemporary { get; set; }
-
 		[Display(Name = "First Name")]
 		public string FirstName { get; set; }
 

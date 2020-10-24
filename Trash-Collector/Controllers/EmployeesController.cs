@@ -52,6 +52,19 @@ namespace Trash_Collector.Controllers
             return View(employee);
         }
 
+        // GET: Employees/DeliveryIndex
+        public async Task<IActionResult> DeliveryIndex()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+		    		var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).SingleOrDefault();
+            if(CurrentEmployee == null)
+            {
+                return RedirectToAction("Create");
+            }
+            var applicationDbContext = _context.Customer.Include(c => c.IdentityUser);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
         // GET: Employees/Create
         public IActionResult Create()
         {
@@ -99,7 +112,7 @@ namespace Trash_Collector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdentityUserId,FirstName,ZipCode")] Employee employee)
+        public async Task<IActionResult> Edit(int id, Employee employee)
         {
             if (id != employee.Id)
             {
