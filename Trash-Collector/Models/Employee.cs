@@ -26,5 +26,8 @@ namespace Trash_Collector.Models
 
 		[Display(Name = "Last Name")]
 		public string LastName { get; set; }
+
+		[Display(Name = "Desired Pickup Date")]
+		public DayOfWeek PickupDay { get; set; }
 	}
 }

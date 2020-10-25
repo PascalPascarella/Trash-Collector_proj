@@ -32,13 +32,13 @@ namespace Trash_Collector.Models
 		public DayOfWeek PickupDay { get; set; }
 
 		[Display(Name = "Optional One-Time Pickup Date")]
-		public DateTime ExtraPickUpDay { get; set; }
+		public DateTime? ExtraPickUpDay { get; set; }
 
 		[Display(Name = "Optional Pickup Suspension Start Date")]
-		public DateTime SuspendServiceStartDate { get; set; }
+		public DateTime? SuspendServiceStartDate { get; set; }
 
 		[Display(Name = "Optional Pickup Suspension End Date")]
-		public DateTime SuspendServiceEndDate { get; set; }
+		public DateTime? SuspendServiceEndDate { get; set; }
 
 		[Display(Name = "Balance Due On Account")]
 		public int BalanceDue { get; set; }
