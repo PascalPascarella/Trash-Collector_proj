@@ -31,7 +31,7 @@ namespace Trash_Collector.Controllers
 						}
 						var applicationDbContext = _context.Employee.Include(c => c.IdentityUser);
 						return View(await applicationDbContext.ToListAsync());
-		}
+				}
 
 				// GET: Employees/Details/5
 				public async Task<IActionResult> Details(int? id)
@@ -52,45 +52,118 @@ namespace Trash_Collector.Controllers
 						return View(employee);
 				}
 
-				public async Task<IActionResult> DeliveryIndex()
+				public async Task<IActionResult> CustomerDetails(int? id)
 				{
-					return View();
+					var customer = _context.Customer
+					.Include(c => c.Address)
+					.Where(c => c.Id == id)
+					.FirstOrDefault();
+					return View("CustomerDetails", customer);
 				}
 
 
-				// GET: Employees/DeliveryIndex
-				[HttpGet, ActionName("Delivery Filter")]
-				public async Task<IActionResult> DeliveryIndex(DayOfWeek? day)
+		// Customer List View and Logic
+
+		public async Task<IActionResult> DeliveryIndex()
+		{
+				var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+				var CurrentEmployee = _context.Employee.Where(c => c.IdentityUserId == userId).FirstOrDefault();
+				if (CurrentEmployee == null)
 				{
-						var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-						var CurrentEmployee = _context.Employee.Where(e => e.IdentityUserId == userId).SingleOrDefault();
-						if(CurrentEmployee == null)
-						{
-								return RedirectToAction("Create");
-						}
-						List<SelectListItem> daysList = new List<SelectListItem>();
-						daysList.Add(new SelectListItem() { Text = "Sunday", Value = "0" });
-						daysList.Add(new SelectListItem() { Text = "Monday", Value = "1" });
-						daysList.Add(new SelectListItem() { Text = "Tuesday", Value = "2" });
-						daysList.Add(new SelectListItem() { Text = "Wednesday", Value = "3" });
-						daysList.Add(new SelectListItem() { Text = "Thursday", Value = "4" });
-						daysList.Add(new SelectListItem() { Text = "Friday", Value = "5" });
-						daysList.Add(new SelectListItem() { Text = "Saturday", Value = "6" });
-						var employeeDayChoice = from d in daysList select d.Text;
-						ViewBag.Day = employeeDayChoice;
-
-						var applicationDbContext = _context.Customer.Where(c => c.PickupDay == day);
-						applicationDbContext = applicationDbContext.Where(c => c.Address.PostalCode == CurrentEmployee.Address.PostalCode && c.trashPickupStatus != Customer.TrashPickupStatus.Settled);
-						if (applicationDbContext == null)
-						{
-							var applicationDbContextNoDaySelected = _context.Customer.Include(c => c.IdentityUser);
-							return View(await applicationDbContextNoDaySelected.ToListAsync());
-						}
-						return View(await applicationDbContext.ToListAsync());
+						return RedirectToAction("Create");
 				}
+			var customersList = CustomersList(CurrentEmployee);
+						return View();
+		}
+		//
+		private List<Customer> CustomersList(Employee employee)
+		{
+				var customers = FetchRegularSchedule(employee);
+				customers = ExtraServicesChecker(employee, customers);
+				customers = ExcludeCompletedPickups(customers);
+				return customers;
+		}
 
-				// GET: Employees/Create
-				public IActionResult Create()
+		private List<Customer> FetchRegularSchedule(Employee employee)
+		{
+				List<Customer> customers = new List<Customer>();
+				foreach (Customer customer in _context.Customer.Include(c => c.Address))
+				{
+						if (customer.Address.PostalCode == employee.Address.PostalCode
+						&& customer.PickupDay == DateTime.Today.DayOfWeek
+						&& customer.trashPickupStatus == Customer.TrashPickupStatus.Unsettled)
+						{
+							customers.Add(customer);
+						}
+				}
+				return customers;
+		}
+
+		private List<Customer> ExtraServicesChecker(Employee employee, List<Customer> customers)
+		{
+			customers = ExtraPickupChecker(employee, customers);
+			customers = ExcludeServiceSuspensions(employee, customers);
+			return customers;
+		}
+
+		private List<Customer> ExtraPickupChecker(Employee employee, List<Customer> customers)
+		{
+			foreach (Customer customer in _context.Customer)
+			{
+				if (customer.ExtraPickUpDay != null)
+				{
+					if (customer.ExtraPickUpDay.Equals(DateTime.Today.Date) && customer.Address.PostalCode == employee.Address.PostalCode)
+					{
+						customers.Add(customer);
+					}
+				}
+			}
+			return customers;
+		}
+
+		private List<Customer> ExcludeServiceSuspensions(Employee employee, List<Customer> customers)
+		{
+			foreach (Customer customer in customers.ToList())
+			{
+				if (customer.SuspendServiceStartDate?.CompareTo(DateTime.Today.Date) <= 0
+				&& customer.SuspendServiceEndDate?.CompareTo(DateTime.Today.Date) > 0
+				&& customer.Address.PostalCode == employee.Address.PostalCode)
+				{
+					customers.Remove(customer);
+				}
+			}
+			return customers;
+		}
+		private List<Customer> ExcludeCompletedPickups(List<Customer> customers)
+		{
+			foreach (Customer customer in customers.ToList())
+			{
+				if (customer.trashPickupStatus == Customer.TrashPickupStatus.Settled)
+				{
+					customers.Remove(customer);
+				}
+			}
+			return customers;
+		}
+
+		public async Task<IActionResult> ConfirmPickup(int? id)
+		{
+			var customer = _context.Customer
+			.Where(c => c.Id == id)
+			.FirstOrDefault();
+			AccountSettler(customer);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Index");
+		}
+
+		private static void AccountSettler(Customer customer)
+		{
+			customer.BalanceDue += 10;
+			customer.trashPickupStatus = Customer.TrashPickupStatus.Settled;
+		}
+
+		// GET: Employees/Create
+		public IActionResult Create()
 				{
 						return View();
 				}
